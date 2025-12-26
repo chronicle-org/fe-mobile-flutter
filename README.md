@@ -1,16 +1,26 @@
-# flutter_app
+# 📱 Chronicle — Mobile App (Flutter)
 
-A new Flutter project.
+> Your stories — anytime, anywhere. Capture ideas on the go and sync across devices.
 
-## Getting Started
+Chronicle Mobile brings the Chronicle storytelling experience to Android and iOS. Write drafts, read inspiring stories, and stay connected with your creativity wherever you are.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 What you can do with this app
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- 📝 Create, edit, and save stories
+- 💾 Draft support for unfinished ideas
+- 📚 Browse and read stories from others
+- 👤 Manage your profile and account
+- 🔄 Seamless sync with the Chronicle backend
+- 📶 Offline-friendly writing experience
+- 📲 Native support for **Android & iOS**
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🧰 Tech Stack
+
+- **Framework:** Flutter  
+- **Language:** Dart  
+- **Backend:** Chronicle NestJS API  
+- **Database/Auth:** Supabase  
