@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../screens/post_detail_screen.dart';
 import '../screens/profile_screen.dart';
 import '../services/api_service.dart';
+import '../utils/text_utils.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -14,6 +15,10 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Calculate reading time with fallback
+    final readingTime =
+        post.readingTime > 0 ? post.readingTime : calculateReadingTime(post.content);
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -121,6 +126,16 @@ class PostCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   const SizedBox(height: 12),
                   // Stats Row
+                  if (readingTime > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        '📖 $readingTime min read',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
                   Row(
                     children: [
                       Icon(

@@ -25,7 +25,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    // Add extra tab for drafts if it's the current user's profile
+    final tabCount = ApiService.currentUserId == widget.userId ? 5 : 4;
+    _tabController = TabController(length: tabCount, vsync: this);
     _fetchUser();
   }
 
@@ -166,11 +168,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                   controller: _tabController,
                   labelColor: Theme.of(context).colorScheme.primary,
                   unselectedLabelColor: Colors.grey,
-                  tabs: const [
-                    Tab(text: 'Posts'),
-                    Tab(text: 'Followers'),
-                    Tab(text: 'Following'),
-                    Tab(text: 'Bookmarks'),
+                  tabs: [
+                    const Tab(text: 'Posts'),
+                    const Tab(text: 'Followers'),
+                    const Tab(text: 'Following'),
+                    const Tab(text: 'Bookmarks'),
+                    if (ApiService.currentUserId == user.id)
+                      const Tab(text: 'Drafts'),
                   ],
                 ),
               ),
@@ -185,6 +189,8 @@ class _ProfileScreenState extends State<ProfileScreen>
             _buildFollowersTab(),
             _buildFollowingTab(),
             _buildBookmarksTab(),
+            if (ApiService.currentUserId == _user!.id)
+              _buildDraftsTab(),
           ],
         ),
       ),
@@ -316,6 +322,29 @@ class _ProfileScreenState extends State<ProfileScreen>
           padding: const EdgeInsets.all(16),
           itemCount: posts.length,
           itemBuilder: (context, index) => PostCard(post: posts[index]),
+        );
+      },
+    );
+  }
+
+  Widget _buildDraftsTab() {
+    return FutureBuilder<List<Post>>(
+      future: PostService.getDrafts(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        final drafts = snapshot.data ?? [];
+        if (drafts.isEmpty) {
+          return const Center(child: Text('No drafts yet'));
+        }
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: drafts.length,
+          itemBuilder: (context, index) => PostCard(post: drafts[index]),
         );
       },
     );

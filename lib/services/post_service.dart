@@ -65,6 +65,43 @@ class PostService {
     }
   }
 
+  static Future<List<Post>> getDrafts({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final uri = Uri.parse(
+      '${ApiService.baseUrl}/post/user/${ApiService.currentUserId}/drafts?page=$page&limit=$limit',
+    );
+
+    final response = await http.get(uri, headers: ApiService.headers);
+
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body);
+      final content = body['content'];
+      if (content != null && content['data'] != null) {
+        final List<dynamic> data = content['data'];
+        return data.map((e) => Post.fromJson(e)).toList();
+      }
+      return [];
+    } else {
+      throw Exception('Failed to load drafts: ${response.statusCode}');
+    }
+  }
+
+  static Future<Post> publishDraft(int postId) async {
+    final uri = Uri.parse(
+      '${ApiService.baseUrl}/post/$postId/publish',
+    );
+    final response = await http.put(uri, headers: ApiService.headers);
+
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body);
+      return Post.fromJson(body['content']);
+    } else {
+      throw Exception('Failed to publish draft: ${response.statusCode}');
+    }
+  }
+
   static Future<Map<String, dynamic>?> toggleInteraction(
     int postId,
     String actionType,

@@ -32,6 +32,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
   String _thumbnailUrl = '';
   bool _isSubmitting = false;
   bool _isUploadingThumbnail = false;
+  bool _isDraft = false;
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
     _setupFocusListeners();
     if (widget.post != null) {
       _thumbnailUrl = widget.post!.thumbnailUrl;
+      _isDraft = widget.post!.isDraft;
     }
   }
 
@@ -246,13 +248,18 @@ class _EditPostScreenState extends State<EditPostScreen> {
         'sub_title': subtitleHtml,
         'content': contentHtml,
         'thumbnail_url': _thumbnailUrl,
+        'is_draft': _isDraft,
       };
 
       if (widget.post == null) {
         await PostService.createPost(payload);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Post created successfully!')),
+            SnackBar(
+              content: Text(
+                _isDraft ? 'Draft saved successfully!' : 'Post created successfully!',
+              ),
+            ),
           );
           Navigator.pop(context, true);
         }
@@ -260,7 +267,11 @@ class _EditPostScreenState extends State<EditPostScreen> {
         await PostService.updatePost(widget.post!.id, payload);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Post updated successfully!')),
+            SnackBar(
+              content: Text(
+                _isDraft ? 'Draft updated successfully!' : 'Post updated successfully!',
+              ),
+            ),
           );
           Navigator.pop(context, true);
         }
@@ -286,6 +297,31 @@ class _EditPostScreenState extends State<EditPostScreen> {
       appBar: AppBar(
         title: Text(widget.post == null ? 'Create Post' : 'Edit Post'),
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Center(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isDraft = !_isDraft;
+                  });
+                },
+                child: Tooltip(
+                  message: _isDraft ? 'Save as draft' : 'Publish post',
+                  child: Row(
+                    children: [
+                      Icon(_isDraft ? Icons.draft_outlined : Icons.publish),
+                      const SizedBox(width: 4),
+                      Text(
+                        _isDraft ? 'Draft' : 'Publish',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
           if (_isSubmitting)
             const Center(
               child: Padding(

@@ -18,6 +18,8 @@ class Post {
   final int viewCount;
   final int likesCount;
   final List<int> likes;
+  final bool isDraft;
+  final int readingTime;
   final LoginResponse? user; // Using LoginResponse as a proxy for User for now
 
   Post({
@@ -38,6 +40,8 @@ class Post {
     required this.viewCount,
     required this.likesCount,
     required this.likes,
+    this.isDraft = false,
+    this.readingTime = 0,
     this.user,
   });
 
