@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   void initState() {
     super.initState();
     // Add extra tab for drafts if it's the current user's profile
-    final tabCount = ApiService.currentUserId == widget.userId ? 5 : 4;
+    final tabCount = ApiService.currentUserId == widget.userId ? 6 : 5;
     _tabController = TabController(length: tabCount, vsync: this);
     _fetchUser();
   }
@@ -166,6 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               delegate: _SliverAppBarDelegate(
                 TabBar(
                   controller: _tabController,
+                  isScrollable: true,
                   labelColor: Theme.of(context).colorScheme.primary,
                   unselectedLabelColor: Colors.grey,
                   tabs: [
@@ -173,6 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     const Tab(text: 'Followers'),
                     const Tab(text: 'Following'),
                     const Tab(text: 'Bookmarks'),
+                    const Tab(text: 'Liked'),
                     if (ApiService.currentUserId == user.id)
                       const Tab(text: 'Drafts'),
                   ],
@@ -189,6 +191,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             _buildFollowersTab(),
             _buildFollowingTab(),
             _buildBookmarksTab(),
+            _buildLikesTab(),
             if (ApiService.currentUserId == _user!.id)
               _buildDraftsTab(),
           ],
@@ -317,6 +320,29 @@ class _ProfileScreenState extends State<ProfileScreen>
         final posts = snapshot.data ?? [];
         if (posts.isEmpty) {
           return const Center(child: Text('No bookmarks yet'));
+        }
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: posts.length,
+          itemBuilder: (context, index) => PostCard(post: posts[index]),
+        );
+      },
+    );
+  }
+
+  Widget _buildLikesTab() {
+    return FutureBuilder<List<Post>>(
+      future: UserService.getLikes(widget.userId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        final posts = snapshot.data ?? [];
+        if (posts.isEmpty) {
+          return const Center(child: Text('No liked posts yet'));
         }
         return ListView.builder(
           padding: const EdgeInsets.all(16),
