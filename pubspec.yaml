@@ -122,5 +122,5 @@ flutter_launcher_icons:
 
   # Optional: For Android only, use an adaptive icon set
   # (recommended for Android 8.0+ devices)
-  adaptive_icon_background: "#FFFFFF" # Use a solid color hex code for the background
-  adaptive_icon_foreground: "assets/images/play_store_512.png" # Optional: A different path for the foreground layer (e.g., your logo cutout)
+  adaptive_icon_background: "#151821"
+  adaptive_icon_foreground: "assets/images/launcher_foreground.png"

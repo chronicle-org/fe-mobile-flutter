@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Image(
                             image: AssetImage(
-                              'assets/images/chronicle-icon-removebg-preview.png',
+                              'assets/images/chronicle-logo.png',
                             ),
                             color: isDark
                                 ? Colors.white
